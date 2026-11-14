@@ -1,24 +1,33 @@
-# Student Management REST API
+# Student Management System (REST API + Frontend)
 
-A simple REST API built with **Node.js** and **Express.js** to manage student records (ID, Name, Department, Semester). Data is stored in an in-memory array, so it resets whenever the server restarts.
+A Student Management app built with **Node.js and Express.js** (REST API) and a plain **HTML/CSS/JavaScript** frontend. Student data (ID, Name, Department, Semester) is stored in an array.
+
+**Live demo (GitHub Pages):** https://keerthi957-321.github.io/Student--Management-System/
 
 ## Features
-- Full CRUD operations on students
-- Express Router for modular routing
+- Full CRUD REST API with Express Router
 - JSON body parsing middleware
-- Input validation (missing/invalid fields)
-- Proper HTTP status codes (200, 201, 400, 404)
-- Centralized error-handling middleware
-- Search students by department
-- Web frontend (HTML/CSS/JS) to add, edit, delete and filter students
+- Input validation, proper status codes (200, 201, 400, 404) and error-handling middleware
+- Search/filter students by department (`GET /students?department=...`)
+- Interactive frontend: view, add, edit, delete and filter students
+
+## Two ways the frontend runs
+| Where | Backend used | Data |
+|-------|--------------|------|
+| `npm start` → http://localhost:3000 | Express API | In-memory array on the server |
+| GitHub Pages (static hosting) | Built-in browser version of the same API (`docs/local-api.js`) | Saved in your browser (localStorage) |
+
+GitHub Pages can only host static files, so it cannot run the Node server. The frontend detects this automatically and switches to demo mode. A badge at the top shows which mode is active. To use a real hosted backend instead, deploy the Express server (e.g. on Render) and set its URL in `docs/config.js`.
 
 ## Project Structure
 ```
 student-management-api/
-├── public/
+├── docs/                 # Frontend (also served by GitHub Pages)
 │   ├── index.html
 │   ├── style.css
-│   └── script.js
+│   ├── script.js
+│   ├── local-api.js
+│   └── config.js
 ├── routes/
 │   └── students.js
 ├── server.js
@@ -27,81 +36,51 @@ student-management-api/
 └── README.md
 ```
 
-## Prerequisites
-- [Node.js](https://nodejs.org/) v18 or later
-- Postman or Thunder Client (VS Code extension) for testing
-
-## How to Run
+## How to Run Locally
+Requires [Node.js](https://nodejs.org/) v18 or later.
 ```bash
-# 1. Clone the repository
-git clone <your-repo-url>
-cd student-management-api
-
-# 2. Install dependencies
+git clone https://github.com/Keerthi957-321/Student--Management-System.git
+cd Student--Management-System
 npm install
-
-# 3. Start the server
 npm start
 ```
-The server runs at **http://localhost:3000** (set the `PORT` environment variable to change it).
+Open **http://localhost:3000** for the frontend, or call the API directly at `http://localhost:3000/students`. Set the `PORT` environment variable to change the port.
 
-## Frontend
-Open **http://localhost:3000** in your browser. The frontend is served by the same Express server and talks to the API with `fetch`. You can:
-- View all students in a table
-- Add a student using the form (server validation errors are shown under the form)
-- Edit a student with the Edit button, then click Update Student
-- Delete a student with the Delete button
-- Filter students by department using the dropdown (uses `GET /students?department=...`)
+## Publish on GitHub Pages
+1. Push the project to GitHub.
+2. Go to **Settings → Pages**.
+3. Under **Build and deployment**, choose **Deploy from a branch**, select branch **main** and folder **/docs**, then click **Save**.
+4. After a minute, the site is live at `https://<your-username>.github.io/<repo-name>/`.
 
 ## API Endpoints
 
-| Method | Endpoint                       | Description                    | Success Code |
-|--------|--------------------------------|--------------------------------|--------------|
-| GET    | `/students`                    | Get all students               | 200          |
-| GET    | `/students?department=CSE`     | Filter students by department  | 200          |
-| GET    | `/students/:id`                | Get a student by ID            | 200          |
-| POST   | `/students`                    | Add a new student              | 201          |
-| PUT    | `/students/:id`                | Update a student               | 200          |
-| DELETE | `/students/:id`                | Delete a student               | 200          |
+| Method | Endpoint                          | Description                    | Success Code |
+|--------|-----------------------------------|--------------------------------|--------------|
+| GET    | `/students`                       | Get all students               | 200          |
+| GET    | `/students?department=Electronics`| Filter by department           | 200          |
+| GET    | `/students/:id`                   | Get a student by ID            | 200          |
+| POST   | `/students`                       | Add a new student              | 201          |
+| PUT    | `/students/:id`                   | Update a student               | 200          |
+| DELETE | `/students/:id`                   | Delete a student               | 200          |
 
-Error codes: `400` for invalid input or ID, `404` for student/route not found, `500` for unexpected server errors.
+Error codes: `400` invalid input or ID, `404` student/route not found, `500` server error.
 
-### Request Body (POST and PUT)
+### Request body (POST and PUT)
 ```json
-{
-  "name": "Meera Kamath",
-  "department": "Information Science",
-  "semester": 4
-}
+{ "name": "Meera Kamath", "department": "Information Science", "semester": 4 }
 ```
-Rules: `name` and `department` must be non-empty strings; `semester` must be an integer from 1 to 8. The `id` is generated automatically.
+`name` and `department` must be non-empty strings; `semester` must be an integer from 1 to 8. The `id` is generated automatically.
 
 ## Testing with Postman / Thunder Client
+Start the server with `npm start`, then:
+1. `GET http://localhost:3000/students` → all students (200)
+2. `GET http://localhost:3000/students/1` → one student (200)
+3. `POST http://localhost:3000/students` with the JSON body above → 201
+4. `PUT http://localhost:3000/students/1` with a JSON body → 200
+5. `DELETE http://localhost:3000/students/1` → 200
+6. `GET http://localhost:3000/students?department=Computer Science` → filtered list
 
-1. **Get all students** – `GET http://localhost:3000/students`
-2. **Get one student** – `GET http://localhost:3000/students/1`
-3. **Add a student** – `POST http://localhost:3000/students`
-   Body → raw → JSON → paste the sample body above. Expect `201 Created`.
-4. **Update a student** – `PUT http://localhost:3000/students/1` with a JSON body. Expect `200 OK`.
-5. **Delete a student** – `DELETE http://localhost:3000/students/1`. Expect `200 OK`.
-6. **Search by department** – `GET http://localhost:3000/students?department=Computer Science`
-
-### Error cases to try
-- `GET /students/999` → `404 Not Found`
-- `GET /students/abc` → `400 Bad Request`
-- `POST /students` with `{ "name": "" }` → `400` with a list of validation errors
-- `POST /students` with `"semester": 12` → `400`
-- `POST /students` with malformed JSON → `400 Invalid JSON`
-- `GET /unknown` → `404 Route not found`
-
-## Sample Response
-```json
-{
-  "success": true,
-  "message": "Student added successfully",
-  "data": { "id": 4, "name": "Meera Kamath", "department": "Information Science", "semester": 4 }
-}
-```
+Error cases: `GET /students/999` → 404, `GET /students/abc` → 400, `POST` with `{ "name": "" }` → 400, `"semester": 12` → 400, malformed JSON → 400.
 
 ## Author
-Your Name – Week 07 Web Development Task
+Keerthi – Week 07 Web Development Task
