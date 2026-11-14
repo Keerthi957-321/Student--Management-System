@@ -10,10 +10,15 @@ A simple REST API built with **Node.js** and **Express.js** to manage student re
 - Proper HTTP status codes (200, 201, 400, 404)
 - Centralized error-handling middleware
 - Search students by department
+- Web frontend (HTML/CSS/JS) to add, edit, delete and filter students
 
 ## Project Structure
 ```
 student-management-api/
+├── public/
+│   ├── index.html
+│   ├── style.css
+│   └── script.js
 ├── routes/
 │   └── students.js
 ├── server.js
@@ -39,6 +44,14 @@ npm install
 npm start
 ```
 The server runs at **http://localhost:3000** (set the `PORT` environment variable to change it).
+
+## Frontend
+Open **http://localhost:3000** in your browser. The frontend is served by the same Express server and talks to the API with `fetch`. You can:
+- View all students in a table
+- Add a student using the form (server validation errors are shown under the form)
+- Edit a student with the Edit button, then click Update Student
+- Delete a student with the Delete button
+- Filter students by department using the dropdown (uses `GET /students?department=...`)
 
 ## API Endpoints
 

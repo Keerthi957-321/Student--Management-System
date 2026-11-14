@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const studentRoutes = require('./routes/students');
 
 const app = express();
@@ -7,10 +8,8 @@ const PORT = process.env.PORT || 3000;
 // Middleware: parse JSON request bodies
 app.use(express.json());
 
-// Root route
-app.get('/', (req, res) => {
-  res.status(200).json({ message: 'Student Management API is running', endpoints: '/students' });
-});
+// Serve the frontend (public/index.html) at /
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Mount student routes
 app.use('/students', studentRoutes);

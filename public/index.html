@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Student Management System</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <h1>🎓 Student Management System</h1>
+    <p>Manage student records through the REST API</p>
+  </header>
+
+  <main class="layout">
+    <!-- Add / Edit form -->
+    <section class="card">
+      <h2 id="form-title">Add Student</h2>
+      <form id="student-form" novalidate>
+        <label for="name">Name</label>
+        <input type="text" id="name" placeholder="e.g. Meera Kamath" required />
+
+        <label for="department">Department</label>
+        <input type="text" id="department" placeholder="e.g. Computer Science" required />
+
+        <label for="semester">Semester</label>
+        <select id="semester" required>
+          <option value="">Select semester</option>
+          <option>1</option><option>2</option><option>3</option><option>4</option>
+          <option>5</option><option>6</option><option>7</option><option>8</option>
+        </select>
+
+        <p id="form-error" class="error" role="alert"></p>
+
+        <div class="actions">
+          <button type="submit" id="submit-btn" class="btn primary">Add Student</button>
+          <button type="button" id="cancel-btn" class="btn" hidden>Cancel</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Student list -->
+    <section class="card">
+      <div class="list-header">
+        <h2>Students <span id="count" class="badge">0</span></h2>
+        <select id="filter" aria-label="Filter by department">
+          <option value="">All departments</option>
+        </select>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>ID</th><th>Name</th><th>Department</th><th>Semester</th><th>Actions</th></tr>
+          </thead>
+          <tbody id="student-body"></tbody>
+        </table>
+      </div>
+      <p id="empty" class="empty" hidden>No students found.</p>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status"></div>
+  <script src="script.js"></script>
+</body>
+</html>
